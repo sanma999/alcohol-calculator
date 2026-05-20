@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, shrink-to-fit=no">
+  <title>哺乳期酒精代谢时间计算器</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #f7f4f0;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      margin: 0;
+    }
+    .card {
+      max-width: 480px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 32px;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.05), 0 10px 20px rgba(0, 0, 0, 0.03);
+      padding: 28px 24px 32px;
+      backdrop-filter: blur(2px);
+      transition: all 0.2s ease;
+    }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #3b2e24;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+    }
+    .subtitle {
+      color: #7b6e62;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+      border-left: 4px solid #c8a27a;
+      padding-left: 14px;
+      font-weight: 400;
+    }
+    .input-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #4e4137;
+      margin-bottom: 6px;
+    }
+    label span.unit {
+      font-weight: 400;
+      color: #9b8c7c;
+      font-size: 0.8rem;
+    }
+    input, select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #e3d9ce;
+      border-radius: 18px;
+      font-size: 1rem;
+      background: #fdfaf7;
+      transition: all 0.2s;
+      color: #2d241b;
+      font-weight: 500;
+      -webkit-appearance: none;
+      appearance: none;
+      background-color: #fffbf7;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #b2926e;
+      box-shadow: 0 0 0 3px rgba(184, 144, 112, 0.15);
+      background: #ffffff;
+    }
+    .row-2col {
+      display: flex;
+      gap: 14px;
+      align-items: flex-end;
+    }
+    .row-2col .input-group {
+      flex: 1;
+    }
+    .toggle-group {
+      display: flex;
+      gap: 12px;
+      background: #f3ede6;
+      border-radius: 20px;
+      padding: 5px;
+      margin-top: 4px;
+    }
+    .toggle-btn {
+      flex: 1;
+      text-align: center;
+      padding: 10px 6px;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #5f5143;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .toggle-btn.active {
+      background: white;
+      color: #3b2e24;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .divider {
+      margin: 24px 0 18px;
+      height: 1px;
+      background: #ece4d9;
+    }
+    .result-box {
+      background: #f9f5ef;
+      border-radius: 22px;
+      padding: 22px 18px;
+      margin: 20px 0 16px;
+      border: 1px solid #e9dfd2;
+    }
+    .result-time {
+      font-size: 2.6rem;
+      font-weight: 650;
+      color: #3f2f22;
+      text-align: center;
+      line-height: 1.2;
+    }
+    .result-time small {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #7f6e5d;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #5b4d3e;
+      margin-top: 16px;
+      background: #fffbf7;
+      padding: 12px 14px;
+      border-radius: 16px;
+    }
+    .warning-note {
+      margin-top: 16px;
+      background: #fef7e8;
+      border-radius: 16px;
+      padding: 14px 16px;
+      color: #9b6b2c;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+    }
+    .warning-note i {
+      font-style: normal;
+      font-size: 1.2rem;
+    }
+    .calculate-btn {
+      background: #c8a27a;
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 16px 24px;
+      border-radius: 30px;
+      width: 100%;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      letter-spacing: 0.3px;
+      background: linear-gradient(135deg, #d0ad85, #b58b62);
+      box-shadow: 0 8px 18px rgba(180, 130, 90, 0.3);
+    }
+    .calculate-btn:active {
+      background: #a67b55;
+      box-shadow: 0 4px 10px rgba(160, 110, 70, 0.4);
+      transform: scale(0.98);
+    }
+    .disclaimer {
+      color: #b7a797;
+      font-size: 0.7rem;
+      text-align: center;
+      margin-top: 18px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🍷 哺乳期安全时间</h1>
+    <div class="subtitle">基于体重·酒量·个人因素的代谢估算</div>
+
+    <!-- 饮酒量 -->
+    <div class="input-group">
+      <label>🍺 饮酒量 <span class="unit">毫升 (ml)</span></label>
+      <input type="number" id="volumeInput" placeholder="例如 225" value="225" inputmode="decimal" min="0" step="1">
+    </div>
+
+    <!-- 酒精度数 -->
+    <div class="input-group">
+      <label>🥃 酒精度数 <span class="unit">% vol</span></label>
+      <input type="number" id="abvInput" placeholder="例如 13 (干红)" value="13" inputmode="decimal" min="0" max="100" step="0.1">
+    </div>
+
+    <!-- 体重 -->
+    <div class="input-group">
+      <label>⚖️ 你的体重 <span class="unit">公斤 (kg)</span></label>
+      <input type="number" id="weightInput" placeholder="例如 55" value="55" inputmode="decimal" min="30" max="200" step="0.5">
+    </div>
+
+    <!-- 年龄冗余快速选择 -->
+    <div class="input-group">
+      <label>🎂 年龄范围</label>
+      <div class="toggle-group" id="ageGroup">
+        <button type="button" class="toggle-btn active" data-age="young">≤30岁</button>
+        <button type="button" class="toggle-btn" data-age="middle">31-39岁</button>
+        <button type="button" class="toggle-btn" data-age="senior">≥40岁</button>
+      </div>
+    </div>
+
+    <!-- 空腹 / 饱腹 -->
+    <div class="input-group">
+      <label>🍽️ 饮酒状态</label>
+      <div class="toggle-group" id="mealGroup">
+        <button type="button" class="toggle-btn active" data-meal="withFood">随餐/饱腹</button>
+        <button type="button" class="toggle-btn" data-meal="empty">空腹饮酒</button>
+      </div>
+    </div>
+
+    <!-- 体脂与脸红反应 (重要冗余) -->
+    <div class="row-2col">
+      <div class="input-group">
+        <label>🧬 体脂/脸红</label>
+        <select id="faceFlushSelect">
+          <option value="normal">不明显/正常</option>
+          <option value="highFat">体脂偏高</option>
+          <option value="flush">喝酒易脸红</option>
+          <option value="both">易脸红+体脂高</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>🌙 肝功能/状态</label>
+        <select id="liverSelect">
+          <option value="good">正常/休息充足</option>
+          <option value="tired">近期熬夜/疲劳</option>
+          <option value="concern">肝功能不佳/服药</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="calculate-btn" id="calculateBtn">🕒 计算安全代谢时间</button>
+
+    <!-- 结果区域 -->
+    <div id="resultPanel" class="hidden">
+      <div class="result-box">
+        <div class="result-time" id="displayTime">0 <small>小时</small></div>
+        <div class="detail-row">
+          <span>⚡ 基础代谢时间</span>
+          <span id="baseTimeDisplay">—</span>
+        </div>
+        <div class="detail-row">
+          <span>➕ 安全冗余累加</span>
+          <span id="redundancyDisplay">—</span>
+        </div>
+        <div class="detail-row" style="font-weight: 600;">
+          <span>✅ 建议等待总时长</span>
+          <span id="totalTimeDisplay">—</span>
+        </div>
+      </div>
+      <div class="warning-note">
+        <i>⏳</i> 从第一口酒开始计时。该时间为保守估算，仍建议结合自身感受。如果饮酒后仍感头晕，请继续等待。
+      </div>
+    </div>
+    <div class="disclaimer">
+      * 基于体重与平均代谢率公式估算，不能替代医学检测。基因差异影响显著，饮酒易脸红者需格外延长等待。
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // DOM 元素
+      const volumeInput = document.getElementById('volumeInput');
+      const abvInput = document.getElementById('abvInput');
+      const weightInput = document.getElementById('weightInput');
+      
+      // 年龄按钮组
+      const ageButtons = document.querySelectorAll('#ageGroup .toggle-btn');
+      // 饮食状态按钮组
+      const mealButtons = document.querySelectorAll('#mealGroup .toggle-btn');
+      
+      const faceFlushSelect = document.getElementById('faceFlushSelect');
+      const liverSelect = document.getElementById('liverSelect');
+      
+      const calculateBtn = document.getElementById('calculateBtn');
+      const resultPanel = document.getElementById('resultPanel');
+      
+      const displayTime = document.getElementById('displayTime');
+      const baseTimeDisplay = document.getElementById('baseTimeDisplay');
+      const redundancyDisplay = document.getElementById('redundancyDisplay');
+      const totalTimeDisplay = document.getElementById('totalTimeDisplay');
+
+      // 当前选中的状态
+      let currentAgeCategory = 'young';   // young, middle, senior
+      let currentMealStatus = 'withFood'; // withFood, empty
+
+      // 年龄按钮切换
+      ageButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          ageButtons.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentAgeCategory = this.dataset.age;
+        });
+      });
+
+      // 饮食状态切换
+      mealButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          mealButtons.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          currentMealStatus = this.dataset.meal;
+        });
+      });
+
+      // 核心计算函数
+      function calculateMetabolismTime() {
+        // 获取数值
+        let volumeMl = parseFloat(volumeInput.value);
+        let abv = parseFloat(abvInput.value);
+        let weightKg = parseFloat(weightInput.value);
+
+        // 输入验证
+        if (isNaN(volumeMl) || volumeMl <= 0 || isNaN(abv) || abv <= 0 || isNaN(weightKg) || weightKg <= 0) {
+          alert('请填写有效的饮酒量、酒精度数和体重（均需大于0）。');
+          resultPanel.classList.add('hidden');
+          return;
+        }
+        if (abv > 100) {
+          alert('酒精度数应在0-100之间');
+          return;
+        }
+
+        // 1. 基础代谢时间 (小时) 公式: [体积(ml) * 度数(%) * 0.8] / [体重(kg) * 0.15]
+        const alcoholGrams = volumeMl * (abv / 100) * 0.8; // 酒精克数
+        const metabolicRatePerKg = 0.15; // 平均每千克体重每小时代谢0.15克酒精
+        let baseHours = alcoholGrams / (weightKg * metabolicRatePerKg);
+        
+        // 防止极端情况，基础时间至少0小时
+        baseHours = Math.max(0, baseHours);
+
+        // 2. 冗余时间计算 (小时)
+        let redundancyHours = 0;
+
+        // 年龄冗余 (之前规则: >30岁 +0.5~1, 按类别)
+        if (currentAgeCategory === 'middle') {
+          redundancyHours += 0.7;  // 31-39岁 增加约0.7小时
+        } else if (currentAgeCategory === 'senior') {
+          redundancyHours += 1.0;  // ≥40岁 增加1小时
+        }
+        // young (≤30) 不增加
+
+        // 空腹冗余
+        if (currentMealStatus === 'empty') {
+          redundancyHours += 0.7;  // 空腹增加0.5-1小时，取中间0.7
+        }
+
+        // 体脂/脸红选择冗余
+        const faceFlushValue = faceFlushSelect.value;
+        if (faceFlushValue === 'highFat') {
+          redundancyHours += 1.0;   // 体脂偏高 +1小时
+        } else if (faceFlushValue === 'flush') {
+          redundancyHours += 1.5;   // 易脸红 代谢慢，额外增加1.5小时
+        } else if (faceFlushValue === 'both') {
+          redundancyHours += 2.0;   // 脸红+体脂高 叠加
+        }
+        // normal 不增加
+
+        // 肝功能/状态冗余
+        const liverValue = liverSelect.value;
+        if (liverValue === 'tired') {
+          redundancyHours += 0.8;   // 熬夜疲劳增加0.8小时
+        } else if (liverValue === 'concern') {
+          redundancyHours += baseHours * 0.7; // 肝功能不佳增加基础时间的70%
+        }
+        // good 不增加
+
+        // 确保冗余不低于0
+        redundancyHours = Math.max(0, redundancyHours);
+
+        // 总时间 = 基础时间 + 冗余时间
+        let totalHours = baseHours + redundancyHours;
+        
+        // 设置一个合理上限显示，避免过大数字 (例如超过24小时提示)
+        if (totalHours > 24) {
+          totalHours = Math.round(totalHours * 10) / 10;
+        } else {
+          totalHours = Math.round(totalHours * 10) / 10; // 保留一位小数
+        }
+
+        // 格式化显示
+        const formatHours = (h) => {
+          if (h <= 0) return '0 小时';
+          const hours = Math.floor(h);
+          const minutes = Math.round((h - hours) * 60);
+          if (hours === 0) return `${minutes} 分钟`;
+          if (minutes === 0) return `${hours} 小时`;
+          return `${hours} 小时 ${minutes} 分钟`;
+        };
+
+        // 更新UI
+        displayTime.innerHTML = `${totalHours} <small>小时</small>`;
+        baseTimeDisplay.textContent = formatHours(baseHours);
+        redundancyDisplay.textContent = `+ ${formatHours(redundancyHours)}`;
+        totalTimeDisplay.textContent = formatHours(totalHours);
+        
+        resultPanel.classList.remove('hidden');
+      }
+
+      // 绑定计算按钮
+      calculateBtn.addEventListener('click', calculateMetabolismTime);
+
+      // 可选：页面加载后自动计算一次默认值 (225ml,13%,55kg,年轻,饱腹,正常)
+      window.addEventListener('DOMContentLoaded', () => {
+        // 确保默认值与输入框一致，然后自动计算展示
+        if (volumeInput.value && abvInput.value && weightInput.value) {
+          calculateMetabolismTime();
+        }
+      });
+
+      // 允许回车触发计算 (简单处理)
+      const inputs = [volumeInput, abvInput, weightInput];
+      inputs.forEach(inp => {
+        inp.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            calculateBtn.click();
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>
